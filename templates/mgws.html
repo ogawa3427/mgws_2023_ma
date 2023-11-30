@@ -1,0 +1,39 @@
+<!--
+    demo01.html
+    First version: Thu Jul 13 21:38:56 JST 2023
+    Last update: Mon Jul 17 17:39:07 JST 2023
+
+    Reference(s)
+    https://www.nishishi.com/javascript-tips/realtime-clock-setinterval.html   
+    https://web-dev.tech/front-end/javascript/digital-clock/
+-->
+
+<!DOCTYPE html>
+<html lagn="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <title>JavaScript for Carol</title>
+    <link rel="stylesheet" href="/static/css/demo01.css">
+</head>
+<body>
+    <input type="button" value="Push and release here to sync time" id="button">
+    <div class="container">
+        <div class="data">
+            <p class="data1">(Data1)</p>
+            <!-- <p><span class="data2">(Data2)</span>  <span class="data3">(Data3)</span></p> -->
+            <p class="data2">(Data2)</p>
+            <p class="data3">(Data3)</p>
+            <p class="data0">(Data0)</p>
+        </div>
+    </div>
+
+    <p id="RealtimeDataDisplayArea0">(Display data0 here)</p>
+    <p id="RealtimeDataDisplayArea1">(Display data1 here)</p>
+    <p id="RealtimeDataDisplayArea2">(Display data2 here)</p>
+    <p id="RealtimeDataDisplayArea3">(Display data3 here)</p>
+
+    <script src="/static/js/demo01.js"></script>
+</body>
+</html>
