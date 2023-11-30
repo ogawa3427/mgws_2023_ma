@@ -36,9 +36,15 @@ const WSURL = 'ws://broker.hivemq.com:8000/mqtt'
 // const WSURL = 'wss://broker.hivemq.com:8004/mqtt'
 // const WSURL = 'ws://test.mosquitto.org:8081'
 
-const MQTTtopic = 'mgwsPROD-Q101/prod1130'
+const MQTTtopic = 'mgwsPROD-Q101/prod1201'
 
 // -----------------------------------------------------------------------------
+
+let _data = [0,0,0]
+let _goto = [0,0,0]
+let _ooka = [0,0,0]
+let _shimizu = [0,0,0]
+let _ogawa = [0,0,0]
 
 var intervalID = 0
 var ntpOffset = 0
@@ -69,7 +75,7 @@ function setZero3(x) {
 
 // showData() - display digital clock
 
-function showData() {
+function showData(_data,_goto,_ooka,_shimizu,_ogawa) {
     var _Time0  = Date.now()
     var _nowTime  = new Date(_Time0 + (ntpOffset * 1000)) ; // Date(_nowMillisec)
     var _dow3 = new Array("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
@@ -95,6 +101,48 @@ function showData() {
     } else if (_timeOffset < 0) {
         mesgTimeOffset = mesgTimeOffset + "" + _timeOffset/60
     }
+    console.log(_data)
+    console.log(_goto)
+    console.log(_ogawa)
+    console.log(_shimizu)
+    console.log(_ooka)
+
+    console.log('YOOOOOOO')
+
+    var pulld = document.getElementById("pulldown").value;
+    console.log(pulld)
+    switch (pulld){
+        case 'ogawa':
+            data1 = _ogawa[0]
+            data2 = _ogawa[1]
+            data3 = _ogawa[2]
+            break;
+        case 'shimizu':
+            console.log("HELLOshimizu")
+            console.log(_shimizu)
+            data1 = _shimizu[0]
+            data2 = _shimizu[1]
+            data3 = _shimizu[2]
+            break;
+        case 'ooka':
+            data1 = _ooka[0]
+            data2 = _ooka[1]
+            data3 = _ooka[2]
+            break;
+        case 'goto':
+            data1 = _goto[0]
+            data2 = _goto[1]
+            data3 = _goto[2]
+            break;
+        case 'kawasaki':
+            data1 = _data[0]
+            data2 = _data[1]
+            data3 = _data[2]
+    }
+
+    console.log(data1)
+    console.log(data2)
+    console.log(data3)
 
     document.getElementById("RealtimeDataDisplayArea0").innerHTML = (mesgDate + " " + mesgTime)
     document.getElementById("RealtimeDataDisplayArea1").innerHTML = "Data1:" + data1;
@@ -151,7 +199,7 @@ function syncTime() {
 // startData() - start calling showData(). It will be called every 1sec.
 
 function startData() {
-    intervalID = setInterval('showData()', 1000)
+    intervalID = setInterval('showData(_data, _goto, _ooka, _shimizu, _ogawa)', 1000)
     console.log("Let's go by startData()")
 }
 
@@ -159,6 +207,8 @@ function startData() {
 
 // var consout = 'MQTT over WebSockets Test'+'<br>'
 // document.body.innerHTML = consout
+
+
 
 var client = mqtt.connect(WSURL)
 
@@ -185,11 +235,41 @@ client.on('message', function(topic, payload) {
 	// in case of "val1 val2 val3"
             var _vals = _text.trim().split(/[ \t]/)
             var _n = _vals.length;
-            if (_n >= 1) {data1 = _vals[3]}
-            if (_n >= 2) {data2 = _vals[4]}
-            if (_n >= 3) {data3 = _vals[5]}
+            console.log('vals')
+            console.log(_vals)
+
+            if (_vals[0]=="goto") {
+                console.log('goto')
+                if (_n >= 1) {_goto[0] = _vals[2]}
+                if (_n >= 2) {_goto[1] = _vals[3]}
+                if (_n >= 3) {_goto[2] = _vals[4]}
+            } else if (_vals[0] == "Ooka") {
+                if (_n >= 1) {_ooka[0] = _vals[2]}
+                if (_n >= 2) {_ooka[1] = _vals[3]}
+                if (_n >= 3) {_ooka[2] = _vals[4]}
+            } else if (_vals[0] == "shimizu") {
+                console.log('shimizu')
+                if (_n >= 1) {_shimizu[0] = _vals[2]}
+                if (_n >= 2) {_shimizu[1] = _vals[3]}
+                if (_n >= 3) {_shimizu[2] = _vals[4]}
+            } else if (_vals[0] == "ogawa") {
+                if (_n >= 1) {_ogawa[0] = _vals[2]}
+                if (_n >= 2) {_ogawa[1] = _vals[3]}
+                if (_n >= 3) {_ogawa[2] = _vals[4]}
+            } else {
+                if (_n >= 1) {_data[0] = _vals[2]}
+                if (_n >= 2) {_data[1] = _vals[3]}
+                if (_n >= 3) {_data[2] = _vals[4]}
+            }
             _mesg = "_vals=[" + _vals + "]"
             console.log(_mesg)
+
+            console.log("RECIEVED")
+            console.log(_data)
+            console.log("goto" + _goto)
+            console.log(_ooka)
+            console.log("hismizu" + _shimizu)
+            console.log(_ogawa)
 	}
     }
 )
@@ -201,7 +281,9 @@ button.addEventListener('mousedown', mouseDown)
 button.addEventListener('mouseup', mouseUp)
 button.addEventListener('click', buttonClick)
 
-showData()
+
+showData(_data, _goto, _ooka, _shimizu, _ogawa);
+
 syncTime()
 
 // -----------------------------------------------------------------------------
